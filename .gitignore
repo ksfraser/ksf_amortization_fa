@@ -1,0 +1,22 @@
+# Composer
+vendor/
+composer.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+error_log
+
+# Project
+.env
+.env.local
