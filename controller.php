@@ -81,13 +81,11 @@ switch ($action) {
         
     case 'report':
         // Generate reports
-        $reportingPath = __DIR__ . '/../../src/Ksfraser/Amortizations/reporting.php';
+        $reportingPath = __DIR__ . '/vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/reporting.php';
         if (file_exists($reportingPath)) {
             include $reportingPath;
         } else {
-            echo (new Heading(3))->setText('Amortization Reports')->render();
-            $p = new HtmlParagraph(new HtmlString('Reports feature coming soon...'));
-            echo $p->getHtml();
+            echo '<p style="color: red;">Error: reporting.php not found. Run composer install.</p>';
         }
         break;
         
@@ -125,12 +123,12 @@ switch ($action) {
         echo (new Heading(2))->setText('Amortization Loans')->render();
         
         // Include loan list view
-        $viewPath = __DIR__ . '/../../src/Ksfraser/Amortizations/view.php';
+        $viewPath = __DIR__ . '/vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/view.php';
         if (file_exists($viewPath)) {
             include $viewPath;
         } else {
-            $p = new HtmlParagraph(new HtmlString('Loan list view coming soon...'));
-            echo $p->getHtml();
+            echo '<p style="color: red;">Error: view.php not found at: ' . htmlspecialchars($viewPath) . '</p>';
+            echo '<p>Run: composer install</p>';
         }
         break;
 }
