@@ -28,8 +28,14 @@ class AmortizationMenuBuilder
     public function __construct($pathToRoot = '')
     {
         $this->pathToRoot = $pathToRoot;
-        // Single master path to controller - all actions use this base
-        $this->controllerUrl = $pathToRoot . '/modules/amortization/controller.php';
+        // Single master path to controller - use current script if available, otherwise construct path
+        if (isset($_SERVER['SCRIPT_NAME'])) {
+            // We're already at the controller, use current script
+            $this->controllerUrl = $_SERVER['SCRIPT_NAME'];
+        } else {
+            // Fallback to constructed path
+            $this->controllerUrl = $pathToRoot . '/modules/amortization/controller.php';
+        }
     }
     
     /**
