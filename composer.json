@@ -6,13 +6,23 @@
     "version": "1.0.0",
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/ksfraser/ksf_amortization.git"
+            "type": "path",
+            "url": "../..",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../vendor-src/ksfraser-html",
+            "options": {
+                "symlink": false
+            }
         }
     ],
     "require": {
         "php": ">=7.3",
-        "ksfraser/amortizations-core": "dev-main"
+        "ksfraser/amortizations-core": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
