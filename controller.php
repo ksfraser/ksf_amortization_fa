@@ -47,7 +47,10 @@ if (file_exists($moduleAutoload)) {
 require_once __DIR__ . '/MenuBuilder.php';
 
 // Start FA page (includes header, sets up page context)
-page(_("Amortization Module"));
+// Only call if running within FrontAccounting
+if (function_exists('page')) {
+    page(_("Amortization Module"));
+}
 
 // Display navigation menu on all pages
 $menuBuilder = new AmortizationMenuBuilder($path_to_root);
@@ -99,5 +102,8 @@ switch ($action) {
 }
 
 // End FA page (includes footer, closes page wrapper)
-end_page();
+// Only call if running within FrontAccounting
+if (function_exists('end_page')) {
+    end_page();
+}
 ?>
