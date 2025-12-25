@@ -3,7 +3,7 @@
 /**
  * FrontAccounting Amortization Module Controller
  * 
- * Routes requests to appropriate views/actions using Ksfraser\HTML builder:
+ * Routes requests to appropriate views/actions
  * - Default: List loans
  * - ?action=admin: Admin settings
  * - ?action=create: Create new loan
@@ -11,11 +11,6 @@
  * 
  * @package AmortizationModule
  */
-
-use Ksfraser\HTML\Elements\Div;
-use Ksfraser\HTML\Elements\Heading;
-use Ksfraser\HTML\Elements\Link;
-use Ksfraser\HTML\Elements\Paragraph;
 
 global $path_to_root, $db;
 
@@ -25,10 +20,19 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'default';
 // Get FrontAccounting table prefix (TB_PREF is defined by FA, typically '0_')
 $dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
 
-// Require Composer autoloader if available
-$autoload = __DIR__ . '/vendor/autoload.php';
-if (file_exists($autoload)) {
-    require_once $autoload;
+// Require Composer autoloader - check multiple locations
+// 1. FA module's own vendor (if composer install run here)
+// 2. Parent project vendor (main repo)
+$autoloadPaths = [
+    __DIR__ . '/vendor/autoload.php',  // FA module vendor
+    __DIR__ . '/../../vendor/autoload.php',  // Main project vendor
+];
+
+foreach ($autoloadPaths as $autoload) {
+    if (file_exists($autoload)) {
+        require_once $autoload;
+        break;
+    }
 }
 
 // Route to appropriate view based on action
@@ -53,8 +57,8 @@ switch ($action) {
         if (file_exists(__DIR__ . '/reporting.php')) {
             include __DIR__ . '/reporting.php';
         } else {
-            (new Heading(3))->setText('Amortization Reports')->toHtml();
-            (new Paragraph())->setText('Reports feature coming soon...')->toHtml();
+            echo '<h3>Amortization Reports</h3>';
+            echo '<p>Reports feature coming soon...</p>';
             // TODO: Implement reporting interface
         }
         break;
@@ -62,43 +66,19 @@ switch ($action) {
     case 'default':
     default:
         // List loans and provide navigation
-        (new Heading(2))->setText('Amortization Loans')->toHtml();
+        echo '<h2>Amortization Loans</h2>';
         
-        $nav = (new Div())
-            ->addAttribute('class', 'module-nav')
-            ->addAttribute('style', 'margin-bottom: 20px; text-align: right;');
+        echo '<div class="module-nav" style="margin-bottom: 20px; text-align: right;">';
         
-        $nav->appendChild(
-            (new Link())
-                ->setHref($path_to_root . '/modules/amortization/controller.php?action=create')
-                ->setText('Add New Loan')
-                ->addAttribute('class', 'button')
-        );
+        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=create" class="button">Add New Loan</a> ';
+        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=admin" class="button">Admin Settings</a> ';
+        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=admin_selectors" class="button">Manage Selectors</a> ';
+        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=report" class="button">Reports</a>';
         
-        $nav->appendChild(
-            (new Link())
-                ->setHref($path_to_root . '/modules/amortization/controller.php?action=admin')
-                ->setText('Admin Settings')
-                ->addAttribute('class', 'button')
-        );
-        
-        $nav->appendChild(
-            (new Link())
-                ->setHref($path_to_root . '/modules/amortization/controller.php?action=admin_selectors')
-                ->setText('Manage Selectors')
-                ->addAttribute('class', 'button')
-        );
-        
-        $nav->appendChild(
-            (new Link())
-                ->setHref($path_to_root . '/modules/amortization/controller.php?action=report')
-                ->setText('Reports')
-                ->addAttribute('class', 'button')
-        );
-        
-        $nav->toHtml();
+        echo '</div>';
         
         // TODO: Implement loan list view
-        (new Paragraph())->setText('Loan list view coming soon...')->toHtml();
+        echo '<p>Loan list view coming soon...</p>';
         break;
 }
+?>
