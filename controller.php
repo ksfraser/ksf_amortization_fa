@@ -22,27 +22,6 @@ use Ksfraser\Amortizations\FA\AmortizationMenuBuilder;
 
 global $path_to_root, $db;
 
-// Initialize FrontAccounting database connection if not already set
-// FA should provide $db as a PDO connection, but fallback to creating one if needed
-if (!isset($db) || !$db) {
-    // Attempt to get FA database connection
-    if (function_exists('get_post_connection')) {
-        $db = get_post_connection();
-    } elseif (defined('DB_HOST') && defined('DB_NAME')) {
-        // Fallback: create PDO connection from FA constants
-        $dbHost = DB_HOST;
-        $dbName = DB_NAME;
-        $dbUser = defined('DB_USER') ? DB_USER : 'root';
-        $dbPass = defined('DB_PASSWORD') ? DB_PASSWORD : '';
-        try {
-            $db = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPass);
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
-        }
-    }
-}
-
 // Get action from query parameter
 $action = isset($_GET['action']) ? $_GET['action'] : 'default';
 
