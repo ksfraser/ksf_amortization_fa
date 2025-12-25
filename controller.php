@@ -18,6 +18,7 @@ use Ksfraser\HTML\Elements\HtmlA;
 use Ksfraser\HTML\Elements\HtmlParagraph;
 use Ksfraser\HTML\Elements\HtmlString;
 use Ksfraser\HTML\HtmlAttribute;
+use Ksfraser\Amortizations\FA\AmortizationMenuBuilder;
 
 global $path_to_root, $db;
 
@@ -42,19 +43,13 @@ foreach ($autoloadPaths as $autoload) {
     }
 }
 
+// Load local menu builder class
+require_once __DIR__ . '/MenuBuilder.php';
+
 // Start FA page - wraps output with header, nav, and footer
 // Check if we're running within FrontAccounting by checking for page() function
-
-// Debug: Log what we find
-error_log('AMORT DEBUG: page() exists? ' . (function_exists('page') ? 'YES' : 'NO'));
-error_log('AMORT DEBUG: TB_PREF defined? ' . (defined('TB_PREF') ? 'YES' : 'NO'));
-error_log('AMORT DEBUG: end_page() exists? ' . (function_exists('end_page') ? 'YES' : 'NO'));
-
 if (function_exists('page')) {
-    error_log('AMORT DEBUG: Calling page() function');
     page(_("Amortization Module"));
-} else {
-    error_log('AMORT DEBUG: page() function does not exist - no FA wrapper');
 }
 
 // Route to appropriate view based on action
@@ -91,37 +86,9 @@ switch ($action) {
         // List loans and provide navigation
         echo (new Heading(2))->setText('Amortization Loans')->render();
         
-        $nav = (new Div())
-            ->addClass('module-nav')
-            ->setAttribute('style', 'margin-bottom: 20px; text-align: right;');
-        
-        // Create links using HtmlA
-        $createLink = new HtmlA(new HtmlString(''));
-        $createLink->addHref($path_to_root . '/modules/amortization/controller.php?action=create', 'Add New Loan');
-        $createLink->addAttribute(new HtmlAttribute('class', 'button'));
-        
-        $adminLink = new HtmlA(new HtmlString(''));
-        $adminLink->addHref($path_to_root . '/modules/amortization/controller.php?action=admin', 'Admin Settings');
-        $adminLink->addAttribute(new HtmlAttribute('class', 'button'));
-        
-        $selectorsLink = new HtmlA(new HtmlString(''));
-        $selectorsLink->addHref($path_to_root . '/modules/amortization/controller.php?action=admin_selectors', 'Manage Selectors');
-        $selectorsLink->addAttribute(new HtmlAttribute('class', 'button'));
-        
-        $reportLink = new HtmlA(new HtmlString(''));
-        $reportLink->addHref($path_to_root . '/modules/amortization/controller.php?action=report', 'Reports');
-        $reportLink->addAttribute(new HtmlAttribute('class', 'button'));
-        
-        // Build nav with links
-        echo '<div class="module-nav" style="margin-bottom: 20px; text-align: right;">';
-        echo $createLink->getHtml();
-        echo ' ';
-        echo $adminLink->getHtml();
-        echo ' ';
-        echo $selectorsLink->getHtml();
-        echo ' ';
-        echo $reportLink->getHtml();
-        echo '</div>';
+        // Build navigation menu using SRP class
+        $menuBuilder = new AmortizationMenuBuilder($path_to_root);
+        echo $menuBuilder->build();
         
         // TODO: Implement loan list view
         $p = new HtmlParagraph(new HtmlString('Loan list view coming soon...'));
@@ -131,9 +98,6 @@ switch ($action) {
 
 // End FA page - outputs footer and closes page wrapper
 if (function_exists('end_page')) {
-    error_log('AMORT DEBUG: Calling end_page() function');
     end_page();
-} else {
-    error_log('AMORT DEBUG: end_page() function does not exist');
 }
 ?>
