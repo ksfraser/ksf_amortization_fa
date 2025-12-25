@@ -15,7 +15,7 @@
         "ksfraser/amortizations-core": "dev-main"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
