@@ -3,8 +3,8 @@
 // This view handles management of loan types and interest calculation frequencies
 
 use Ksfraser\HTML\Elements\Heading;
-use Ksfraser\HTML\Elements\Paragraph;
+use Ksfraser\HTML\Elements\HtmlParagraph;
 
-(new Heading(2))->setText('Manage Selectors')->toHtml();
-(new Paragraph())->setText('Selector management coming soon...')->toHtml();
+echo (new Heading(2))->setText('Manage Selectors')->render();
+echo (new HtmlParagraph())->setText('Selector management coming soon...')->getHtml();
 ?>
