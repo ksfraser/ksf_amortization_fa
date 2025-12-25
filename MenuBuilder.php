@@ -18,6 +18,7 @@ use Ksfraser\HTML\HtmlAttribute;
 class AmortizationMenuBuilder
 {
     private $pathToRoot;
+    private $controllerUrl;
     
     /**
      * Initialize menu builder with FA path
@@ -27,6 +28,8 @@ class AmortizationMenuBuilder
     public function __construct($pathToRoot = '')
     {
         $this->pathToRoot = $pathToRoot;
+        // Single master path to controller - all actions use this base
+        $this->controllerUrl = $pathToRoot . '/modules/amortization/controller.php';
     }
     
     /**
@@ -42,40 +45,28 @@ class AmortizationMenuBuilder
         $nav->addAttribute(new HtmlAttribute('style', 'margin-bottom: 20px; text-align: right;'));
         
         // Add New Loan link
-        $createLink = $this->createStyledLink(
-            'Add New Loan',
-            $this->pathToRoot . '/modules/amortization/controller.php?action=create'
-        );
+        $createLink = $this->createStyledLink('Add New Loan', '?action=create');
         $nav->addNested($createLink);
         
         // Spacing
         $nav->addNested(new HtmlString(' '));
         
         // Admin Settings link
-        $adminLink = $this->createStyledLink(
-            'Admin Settings',
-            $this->pathToRoot . '/modules/amortization/controller.php?action=admin'
-        );
+        $adminLink = $this->createStyledLink('Admin Settings', '?action=admin');
         $nav->addNested($adminLink);
         
         // Spacing
         $nav->addNested(new HtmlString(' '));
         
         // Manage Selectors link
-        $selectorsLink = $this->createStyledLink(
-            'Manage Selectors',
-            $this->pathToRoot . '/modules/amortization/controller.php?action=admin_selectors'
-        );
+        $selectorsLink = $this->createStyledLink('Manage Selectors', '?action=admin_selectors');
         $nav->addNested($selectorsLink);
         
         // Spacing
         $nav->addNested(new HtmlString(' '));
         
         // Reports link
-        $reportLink = $this->createStyledLink(
-            'Reports',
-            $this->pathToRoot . '/modules/amortization/controller.php?action=report'
-        );
+        $reportLink = $this->createStyledLink('Reports', '?action=report');
         $nav->addNested($reportLink);
         
         return $nav->getHtml();
@@ -85,13 +76,13 @@ class AmortizationMenuBuilder
      * Create a styled action link using HTML builder
      * 
      * @param string $text Link display text
-     * @param string $href Link URL
+     * @param string $queryString Query string starting with ? (e.g., '?action=create')
      * @return HtmlA Styled link element
      */
-    private function createStyledLink($text, $href)
+    private function createStyledLink($text, $queryString)
     {
         $link = new HtmlA(new HtmlString(''));
-        $link->addHref($href, $text);
+        $link->addHref($this->controllerUrl . $queryString, $text);
         $link->addAttribute(new HtmlAttribute('class', 'button'));
         return $link;
     }
