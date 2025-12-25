@@ -125,9 +125,9 @@ class hooks_amortization extends hooks {
         switch($app->id) {
             case 'GL':
                 $app->add_lapp_function(3, _("Amortization (Amortization)"),
-                    $path_to_root."/modules/".$this->module_name."/modules/amortization/controller.php", 'SA_CUSTOMER', MENU_AMORTIZATIONS);
+                    $path_to_root."/modules/".$this->module_name."/controller.php", 'SA_CUSTOMER', MENU_AMORTIZATIONS);
                 $app->add_lapp_function(3, _("Amortization (Banking)"),
-                    $path_to_root."/modules/".$this->module_name."/modules/amortization/controller.php", 'SA_CUSTOMER', MENU_BANKING);
+                    $path_to_root."/modules/".$this->module_name."/controller.php", 'SA_CUSTOMER', MENU_BANKING);
                 break;
             }
     }
