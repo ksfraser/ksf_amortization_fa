@@ -36,8 +36,10 @@ class hooks_amortization extends hooks {
         
         // Step 3: Get DB adapter and prefix from FA environment
         global $db, $dbPrefix;
-        // Fallback for FA: $db is PDO, $dbPrefix is usually '0_'
-        if (!isset($dbPrefix)) {
+        // FrontAccounting uses TB_PREF constant, fallback to $dbPrefix global or '0_'
+        if (defined('TB_PREF')) {
+            $dbPrefix = TB_PREF;
+        } elseif (!isset($dbPrefix)) {
             $dbPrefix = '0_';
         }
         
