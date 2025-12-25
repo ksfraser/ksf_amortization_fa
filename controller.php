@@ -1,5 +1,4 @@
 <?php
-
 /**
  * FrontAccounting Amortization Module Controller
  * 
@@ -12,23 +11,16 @@
  * @package AmortizationModule
  */
 
-use Ksfraser\HTML\Elements\Div;
-use Ksfraser\HTML\Elements\Heading;
-use Ksfraser\HTML\Elements\HtmlA;
-use Ksfraser\HTML\Elements\HtmlParagraph;
-use Ksfraser\HTML\Elements\HtmlString;
-use Ksfraser\HTML\HtmlAttribute;
-use Ksfraser\Amortizations\FA\AmortizationMenuBuilder;
+// FrontAccounting security and setup
+$page_security = 'SA_CUSTOMER'; // TODO: Create specific amortization security roles
+$path_to_root = "../..";
 
-global $path_to_root, $db;
+// Include FrontAccounting core files - this provides $db, user session, etc.
+include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/ui.inc");
 
-// Get action from query parameter
-$action = isset($_GET['action']) ? $_GET['action'] : 'default';
-
-// Get FrontAccounting table prefix (TB_PREF is defined by FA, typically '0_')
-$dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
-
-// Require Composer autoloaders
+// Load Composer autoloaders
 // Load both main project autoloader AND module autoloader for FA-specific classes
 $mainAutoload = __DIR__ . '/../../vendor/autoload.php';
 $moduleAutoload = __DIR__ . '/vendor/autoload.php';
@@ -42,6 +34,20 @@ if (file_exists($mainAutoload)) {
 if (file_exists($moduleAutoload)) {
     require_once $moduleAutoload;
 }
+
+use Ksfraser\HTML\Elements\Div;
+use Ksfraser\HTML\Elements\Heading;
+use Ksfraser\HTML\Elements\HtmlA;
+use Ksfraser\HTML\Elements\HtmlParagraph;
+use Ksfraser\HTML\Elements\HtmlString;
+use Ksfraser\HTML\HtmlAttribute;
+use Ksfraser\Amortizations\FA\AmortizationMenuBuilder;
+
+// Get FrontAccounting table prefix (TB_PREF is defined by FA, typically '0_')
+$dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
+
+// Get action from query parameter
+$action = isset($_GET['action']) ? $_GET['action'] : 'default';
 
 // Load local menu builder class
 require_once __DIR__ . '/MenuBuilder.php';
