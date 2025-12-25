@@ -28,19 +28,19 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'default';
 // Get FrontAccounting table prefix (TB_PREF is defined by FA, typically '0_')
 $dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
 
-// Require Composer autoloader - check multiple locations
-// 1. FA module's own vendor (if composer install run here)
-// 2. Parent project vendor (main repo)
-$autoloadPaths = [
-    __DIR__ . '/vendor/autoload.php',  // FA module vendor
-    __DIR__ . '/../../vendor/autoload.php',  // Main project vendor
-];
+// Require Composer autoloaders
+// Load both main project autoloader AND module autoloader for FA-specific classes
+$mainAutoload = __DIR__ . '/../../vendor/autoload.php';
+$moduleAutoload = __DIR__ . '/vendor/autoload.php';
 
-foreach ($autoloadPaths as $autoload) {
-    if (file_exists($autoload)) {
-        require_once $autoload;
-        break;
-    }
+// Load main project autoloader (required for core classes)
+if (file_exists($mainAutoload)) {
+    require_once $mainAutoload;
+}
+
+// Load module autoloader (required for FA-specific classes like FADataProvider)
+if (file_exists($moduleAutoload)) {
+    require_once $moduleAutoload;
 }
 
 // Load local menu builder class
