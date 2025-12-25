@@ -43,8 +43,8 @@ foreach ($autoloadPaths as $autoload) {
 }
 
 // Start FA page - wraps output with header, nav, and footer
-// Only call if running within FrontAccounting (page() is a FA function)
-if (function_exists('page')) {
+// Only call if running within FrontAccounting (defined TB_PREF indicates FA environment)
+if (defined('TB_PREF')) {
     page(_("Amortization Module"));
 }
 
@@ -121,8 +121,8 @@ switch ($action) {
 }
 
 // End FA page - outputs footer and closes page wrapper
-// Only call if running within FrontAccounting (end_page is a FA function)
-if (function_exists('end_page')) {
+// Only call if running within FrontAccounting (defined TB_PREF indicates FA environment)
+if (defined('TB_PREF')) {
     end_page();
 }
 ?>
