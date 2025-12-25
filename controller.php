@@ -35,17 +35,17 @@ if (file_exists($autoload)) {
 switch ($action) {
     case 'admin':
         // Admin settings for GL account mappings
-        include __DIR__ . '/views/views/admin_settings.php';
+        include __DIR__ . '/views/admin_settings.php';
         break;
         
     case 'admin_selectors':
         // Manage selector options
-        include __DIR__ . '/views/views/admin_selectors.php';
+        include __DIR__ . '/views/admin_selectors.php';
         break;
         
     case 'create':
         // Create new loan
-        include __DIR__ . '/views/views/user_loan_setup.php';
+        include __DIR__ . '/views/user_loan_setup.php';
         break;
         
     case 'report':
