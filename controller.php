@@ -42,6 +42,9 @@ foreach ($autoloadPaths as $autoload) {
     }
 }
 
+// Start FA page - wraps output with header, nav, and footer
+page(_("Amortization Module"));
+
 // Route to appropriate view based on action
 switch ($action) {
     case 'admin':
@@ -113,4 +116,7 @@ switch ($action) {
         echo $p->getHtml();
         break;
 }
+
+// End FA page - outputs footer and closes page wrapper
+end_page();
 ?>
