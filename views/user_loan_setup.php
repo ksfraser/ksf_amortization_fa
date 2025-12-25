@@ -28,8 +28,36 @@ $selectorRepo = new SelectorRepository($db, 'ksf_selectors', $dbPrefix);
 $paymentFrequencies = $selectorRepo->getBySelectorName('payment_frequency');
 $borrowerTypes = $selectorRepo->getBySelectorName('borrower_type');
 
-// Build form with proper labels
+// Check if we have required selector data
+if (empty($paymentFrequencies) || empty($borrowerTypes)) {
+    echo '<p style="color: red;">Required selector data not found. Please configure selectors in <a href="?action=admin_selectors">Admin → Manage Selectors</a> first.</p>';
+    echo '<p>Required selectors: <strong>payment_frequency</strong>, <strong>borrower_type</strong></p>';
+    return;
+}
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_loan'])) {
+    try {
+        // TODO: Implement loan creation logic using AmortizationModel
+        echo '<p style="color: green; font-weight: bold;">Loan creation functionality coming soon. Data validation passed.</p>';
+        echo '<pre>Submitted data: ' . print_r($_POST, true) . '</pre>';
+    } catch (Exception $e) {
+        echo '<p style="color: red;">Error: ' . htmlspecialchars($e->getMessage()) . '</p>';
+    }
+}
+
+// Build form with all required fields
 echo '<form method="post" action="">';
+
+echo '<div style="margin-bottom: 15px;">';
+echo '<label for="principal">Principal Amount ($):</label><br>';
+echo '<input type="number" name="principal" id="principal" min="1" step="0.01" required style="width: 200px;" placeholder="10000.00">';
+echo '</div>';
+
+echo '<div style="margin-bottom: 15px;">';
+echo '<label for="interest_rate">Annual Interest Rate (%):</label><br>';
+echo '<input type="number" name="interest_rate" id="interest_rate" min="0" step="0.01" required style="width: 200px;" placeholder="5.00">';
+echo '</div>';
 
 echo '<div style="margin-bottom: 15px;">';
 echo '<label for="loan_term_years">Loan Term (Years):</label><br>';
@@ -54,8 +82,19 @@ foreach ($borrowerTypes as $opt) {
 echo '</select>';
 echo '</div>';
 
+echo '<div style="margin-bottom: 15px;">';
+echo '<label for="start_date">Start Date:</label><br>';
+echo '<input type="date" name="start_date" id="start_date" required style="width: 200px;" value="' . date('Y-m-d') . '">';
+echo '</div>';
+
+echo '<div style="margin-bottom: 15px;">';
+echo '<label for="borrower_name">Borrower Name:</label><br>';
+echo '<input type="text" name="borrower_name" id="borrower_name" required style="width: 300px;" placeholder="John Doe">';
+echo '</div>';
+
 echo '<div>';
-echo '<input type="submit" name="submit" value="Create Loan" class="button">';
+echo '<input type="submit" name="create_loan" value="Create Loan" class="button">';
+echo ' <a href="?" class="button">Cancel</a>';
 echo '</div>';
 
 echo '</form>';

@@ -495,4 +495,48 @@ class FADataProvider extends DataProviderAdaptor
 
         return $output;
     }
+
+    /**
+     * Get all loans for display in loan list
+     *
+     * @return array Array of loan objects
+     * @throws DataPersistenceException If query fails
+     */
+    public function getAllLoans(): array
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM fa_loans ORDER BY id DESC");
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        } catch (\PDOException $e) {
+            throw new DataPersistenceException("Failed to retrieve loans: {$e->getMessage()}");
+        }
+    }
+
+    /**
+     * Get all reports for display in reporting table
+     *
+     * @return array Array of report objects
+     * @throws DataPersistenceException If query fails
+     */
+    public function getAllReports(): array
+    {
+        try {
+            // For now, return generated schedules as "reports"
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    s.loan_id as id,
+                    CONCAT('Amortization Schedule - Loan #', l.id) as type,
+                    l.created_at as date
+                FROM fa_amortization_staging s
+                INNER JOIN fa_loans l ON s.loan_id = l.id
+                GROUP BY s.loan_id
+                ORDER BY l.id DESC
+            ");
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_OBJ);
+        } catch (\PDOException $e) {
+            throw new DataPersistenceException("Failed to retrieve reports: {$e->getMessage()}");
+        }
+    }
 }
