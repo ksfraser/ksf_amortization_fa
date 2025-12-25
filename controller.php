@@ -52,6 +52,10 @@ if (function_exists('page')) {
     page(_("Amortization Module"));
 }
 
+// Display navigation menu on all pages
+$menuBuilder = new AmortizationMenuBuilder($path_to_root);
+echo $menuBuilder->build();
+
 // Route to appropriate view based on action
 switch ($action) {
     case 'admin':
@@ -71,13 +75,13 @@ switch ($action) {
         
     case 'report':
         // Generate reports
-        if (file_exists(__DIR__ . '/reporting.php')) {
-            include __DIR__ . '/reporting.php';
+        $reportingPath = __DIR__ . '/../../src/Ksfraser/Amortizations/reporting.php';
+        if (file_exists($reportingPath)) {
+            include $reportingPath;
         } else {
             echo (new Heading(3))->setText('Amortization Reports')->render();
             $p = new HtmlParagraph(new HtmlString('Reports feature coming soon...'));
             echo $p->getHtml();
-            // TODO: Implement reporting interface
         }
         break;
         
@@ -86,13 +90,14 @@ switch ($action) {
         // List loans and provide navigation
         echo (new Heading(2))->setText('Amortization Loans')->render();
         
-        // Build navigation menu using SRP class
-        $menuBuilder = new AmortizationMenuBuilder($path_to_root);
-        echo $menuBuilder->build();
-        
-        // TODO: Implement loan list view
-        $p = new HtmlParagraph(new HtmlString('Loan list view coming soon...'));
-        echo $p->getHtml();
+        // Include loan list view
+        $viewPath = __DIR__ . '/../../src/Ksfraser/Amortizations/view.php';
+        if (file_exists($viewPath)) {
+            include $viewPath;
+        } else {
+            $p = new HtmlParagraph(new HtmlString('Loan list view coming soon...'));
+            echo $p->getHtml();
+        }
         break;
 }
 
