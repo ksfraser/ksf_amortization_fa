@@ -44,8 +44,17 @@ foreach ($autoloadPaths as $autoload) {
 
 // Start FA page - wraps output with header, nav, and footer
 // Check if we're running within FrontAccounting by checking for page() function
+
+// Debug: Log what we find
+error_log('AMORT DEBUG: page() exists? ' . (function_exists('page') ? 'YES' : 'NO'));
+error_log('AMORT DEBUG: TB_PREF defined? ' . (defined('TB_PREF') ? 'YES' : 'NO'));
+error_log('AMORT DEBUG: end_page() exists? ' . (function_exists('end_page') ? 'YES' : 'NO'));
+
 if (function_exists('page')) {
+    error_log('AMORT DEBUG: Calling page() function');
     page(_("Amortization Module"));
+} else {
+    error_log('AMORT DEBUG: page() function does not exist - no FA wrapper');
 }
 
 // Route to appropriate view based on action
@@ -122,6 +131,9 @@ switch ($action) {
 
 // End FA page - outputs footer and closes page wrapper
 if (function_exists('end_page')) {
+    error_log('AMORT DEBUG: Calling end_page() function');
     end_page();
+} else {
+    error_log('AMORT DEBUG: end_page() function does not exist');
 }
 ?>
