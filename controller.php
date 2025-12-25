@@ -85,6 +85,34 @@ switch ($action) {
         }
         break;
         
+    case 'report_details':
+        // AJAX endpoint for report details
+        header('Content-Type: application/json');
+        if (isset($_GET['id'])) {
+            global $db;
+            if ($db) {
+                $dbPrefix = defined('TB_PREF') ? TB_PREF : '';
+                $id = intval($_GET['id']);
+                try {
+                    $stmt = $db->prepare("SELECT * FROM {$dbPrefix}ksf_amortization_staging WHERE id = ?");
+                    $stmt->execute([$id]);
+                    $report = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($report) {
+                        echo json_encode($report);
+                    } else {
+                        echo json_encode(['error' => 'Report not found']);
+                    }
+                } catch (Exception $e) {
+                    echo json_encode(['error' => $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['error' => 'Database not available']);
+            }
+        } else {
+            echo json_encode(['error' => 'Missing report ID']);
+        }
+        exit; // Don't render page footer for AJAX
+        
     case 'default':
     default:
         // List loans and provide navigation
