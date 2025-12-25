@@ -236,4 +236,23 @@ class SelectorRepository
     {
         return $this->fullTableName;
     }
+
+    /**
+     * Get all unique selector names
+     * 
+     * @return array Array of unique selector names
+     * 
+     * @throws Exception If query execution fails
+     */
+    public function getAllSelectorNames()
+    {
+        try {
+            $result = $this->db->query(
+                "SELECT DISTINCT selector_name FROM " . $this->fullTableName . " ORDER BY selector_name"
+            );
+            return $result->fetchAll(PDO::FETCH_COLUMN, 0);
+        } catch (Exception $e) {
+            throw new Exception("Failed to retrieve selector names: " . $e->getMessage());
+        }
+    }
 }
