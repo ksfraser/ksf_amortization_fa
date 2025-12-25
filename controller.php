@@ -3,7 +3,7 @@
 /**
  * FrontAccounting Amortization Module Controller
  * 
- * Routes requests to appropriate views/actions
+ * Routes requests to appropriate views/actions using Ksfraser\HTML library
  * - Default: List loans
  * - ?action=admin: Admin settings
  * - ?action=create: Create new loan
@@ -11,6 +11,13 @@
  * 
  * @package AmortizationModule
  */
+
+use Ksfraser\HTML\Elements\Div;
+use Ksfraser\HTML\Elements\Heading;
+use Ksfraser\HTML\Elements\HtmlA;
+use Ksfraser\HTML\Elements\HtmlParagraph;
+use Ksfraser\HTML\Elements\HtmlString;
+use Ksfraser\HTML\HtmlAttribute;
 
 global $path_to_root, $db;
 
@@ -57,8 +64,9 @@ switch ($action) {
         if (file_exists(__DIR__ . '/reporting.php')) {
             include __DIR__ . '/reporting.php';
         } else {
-            echo '<h3>Amortization Reports</h3>';
-            echo '<p>Reports feature coming soon...</p>';
+            echo (new Heading(3))->setText('Amortization Reports')->render();
+            $p = new HtmlParagraph(new HtmlString('Reports feature coming soon...'));
+            echo $p->getHtml();
             // TODO: Implement reporting interface
         }
         break;
@@ -66,19 +74,43 @@ switch ($action) {
     case 'default':
     default:
         // List loans and provide navigation
-        echo '<h2>Amortization Loans</h2>';
+        echo (new Heading(2))->setText('Amortization Loans')->render();
         
+        $nav = (new Div())
+            ->addClass('module-nav')
+            ->setAttribute('style', 'margin-bottom: 20px; text-align: right;');
+        
+        // Create links using HtmlA
+        $createLink = new HtmlA(new HtmlString(''));
+        $createLink->addHref($path_to_root . '/modules/amortization/controller.php?action=create', 'Add New Loan');
+        $createLink->addAttribute(new HtmlAttribute('class', 'button'));
+        
+        $adminLink = new HtmlA(new HtmlString(''));
+        $adminLink->addHref($path_to_root . '/modules/amortization/controller.php?action=admin', 'Admin Settings');
+        $adminLink->addAttribute(new HtmlAttribute('class', 'button'));
+        
+        $selectorsLink = new HtmlA(new HtmlString(''));
+        $selectorsLink->addHref($path_to_root . '/modules/amortization/controller.php?action=admin_selectors', 'Manage Selectors');
+        $selectorsLink->addAttribute(new HtmlAttribute('class', 'button'));
+        
+        $reportLink = new HtmlA(new HtmlString(''));
+        $reportLink->addHref($path_to_root . '/modules/amortization/controller.php?action=report', 'Reports');
+        $reportLink->addAttribute(new HtmlAttribute('class', 'button'));
+        
+        // Build nav with links
         echo '<div class="module-nav" style="margin-bottom: 20px; text-align: right;">';
-        
-        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=create" class="button">Add New Loan</a> ';
-        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=admin" class="button">Admin Settings</a> ';
-        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=admin_selectors" class="button">Manage Selectors</a> ';
-        echo '<a href="' . $path_to_root . '/modules/amortization/controller.php?action=report" class="button">Reports</a>';
-        
+        echo $createLink->getHtml();
+        echo ' ';
+        echo $adminLink->getHtml();
+        echo ' ';
+        echo $selectorsLink->getHtml();
+        echo ' ';
+        echo $reportLink->getHtml();
         echo '</div>';
         
         // TODO: Implement loan list view
-        echo '<p>Loan list view coming soon...</p>';
+        $p = new HtmlParagraph(new HtmlString('Loan list view coming soon...'));
+        echo $p->getHtml();
         break;
 }
 ?>
