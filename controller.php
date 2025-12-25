@@ -43,7 +43,10 @@ foreach ($autoloadPaths as $autoload) {
 }
 
 // Start FA page - wraps output with header, nav, and footer
-page(_("Amortization Module"));
+// Only call if running within FrontAccounting (page() is a FA function)
+if (function_exists('page')) {
+    page(_("Amortization Module"));
+}
 
 // Route to appropriate view based on action
 switch ($action) {
@@ -118,5 +121,8 @@ switch ($action) {
 }
 
 // End FA page - outputs footer and closes page wrapper
-end_page();
+// Only call if running within FrontAccounting (end_page is a FA function)
+if (function_exists('end_page')) {
+    end_page();
+}
 ?>
