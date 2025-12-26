@@ -47,10 +47,15 @@ if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
                             }
                         } while ($db->more_results() && $db->next_result());
                     } else {
-                        $allSuccess = false;
-                        echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
-                        echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($db->error);
-                        echo '</div>';
+                        // Suppress harmless 'already exists' errors if IF NOT EXISTS is present
+                        if (strpos($db->error, 'already exists') !== false && strpos($sql, 'IF NOT EXISTS') !== false) {
+                            // Do not mark as failure, just skip error output
+                        } else {
+                            $allSuccess = false;
+                            echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
+                            echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($db->error);
+                            echo '</div>';
+                        }
                     }
                 } else {
                     // Fallback for PDO or other DB drivers
@@ -61,9 +66,14 @@ if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
                             try {
                                 $db->query($stmt);
                             } catch (Exception $e) {
+                                $msg = $e->getMessage();
+                                if (strpos($msg, 'already exists') !== false && strpos($stmt, 'IF NOT EXISTS') !== false) {
+                                    // Suppress harmless error
+                                    continue;
+                                }
                                 $allSuccess = false;
                                 echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
-                                echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($e->getMessage());
+                                echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($msg);
                                 echo '</div>';
                             }
                         }
