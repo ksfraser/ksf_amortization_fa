@@ -170,7 +170,5 @@ echo '</div>'; // Close schema div
 
 // Navigation
 echo '<div style="margin-top: 20px;">';
-$backLink = new HtmlA(new HtmlString('← Back to Loans'));
-$backLink->setHref('?action=default');
-echo $backLink->getHtml();
+echo '<a href="?action=default">← Back to Loans</a>';
 echo '</div>';
