@@ -39,63 +39,108 @@ if (empty($paymentFrequencies) || empty($borrowerTypes)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_loan'])) {
     try {
         // TODO: Implement loan creation logic using AmortizationModel
-        echo '<p style="color: green; font-weight: bold;">Loan creation functionality coming soon. Data validation passed.</p>';
-        echo '<pre>Submitted data: ' . print_r($_POST, true) . '</pre>';
+        $successMsg = new HtmlParagraph(new HtmlString('Loan creation functionality coming soon. Data validation passed.'));
+        echo $successMsg->getHtml();
     } catch (Exception $e) {
-        echo '<p style="color: red;">Error: ' . htmlspecialchars($e->getMessage()) . '</p>';
+        $errorMsg = new HtmlParagraph(new HtmlString('Error: ' . htmlspecialchars($e->getMessage())));
+        echo $errorMsg->getHtml();
     }
 }
 
-// Build form with all required fields
-echo '<form method="post" action="">';
+// Build form using HTML builder classes
+$form = new HtmlForm();
+$form->setMethod('post')->setAction('');
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="principal">Principal Amount ($):</label><br>';
-echo '<input type="number" name="principal" id="principal" min="1" step="0.01" required style="width: 200px;" placeholder="10000.00">';
-echo '</div>';
+// Principal Amount
+$principalInput = (new HtmlInput())
+    ->setType('number')
+    ->setName('principal')
+    ->setId('principal')
+    ->setAttribute('min', '1')
+    ->setAttribute('step', '0.01')
+    ->setAttribute('required', 'required')
+    ->setAttribute('placeholder', '10000.00')
+    ->setLabel('Principal Amount ($):');
+$form->addInput($principalInput);
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="interest_rate">Annual Interest Rate (%):</label><br>';
-echo '<input type="number" name="interest_rate" id="interest_rate" min="0" step="0.01" required style="width: 200px;" placeholder="5.00">';
-echo '</div>';
+// Interest Rate
+$rateInput = (new HtmlInput())
+    ->setType('number')
+    ->setName('interest_rate')
+    ->setId('interest_rate')
+    ->setAttribute('min', '0')
+    ->setAttribute('step', '0.01')
+    ->setAttribute('required', 'required')
+    ->setAttribute('placeholder', '5.00')
+    ->setLabel('Annual Interest Rate (%):');
+$form->addInput($rateInput);
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="loan_term_years">Loan Term (Years):</label><br>';
-echo '<input type="number" name="loan_term_years" id="loan_term_years" min="1" value="1" required style="width: 200px;">';
-echo '</div>';
+// Loan Term
+$termInput = (new HtmlInput())
+    ->setType('number')
+    ->setName('loan_term_years')
+    ->setId('loan_term_years')
+    ->setAttribute('min', '1')
+    ->setValue('1')
+    ->setAttribute('required', 'required')
+    ->setLabel('Loan Term (Years):');
+$form->addInput($termInput);
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="payment_frequency">Payment Frequency:</label><br>';
-echo '<select name="payment_frequency" id="payment_frequency" required style="width: 200px;">';
+// Payment Frequency Select
+$frequencySelect = (new HtmlSelect())
+    ->setName('payment_frequency')
+    ->setId('payment_frequency')
+    ->setAttribute('required', 'required')
+    ->setLabel('Payment Frequency:');
 foreach ($paymentFrequencies as $opt) {
-    echo '<option value="' . htmlspecialchars($opt['option_value']) . '">' . htmlspecialchars($opt['option_name']) . '</option>';
+    $option = (new HtmlOption())
+        ->setValue($opt['option_value'])
+        ->setText($opt['option_name']);
+    $frequencySelect->addOption($option);
 }
-echo '</select>';
-echo '</div>';
+$form->addSelect($frequencySelect);
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="borrower_type">Borrower Type:</label><br>';
-echo '<select name="borrower_type" id="borrower_type" required style="width: 200px;">';
+// Borrower Type Select
+$borrowerSelect = (new HtmlSelect())
+    ->setName('borrower_type')
+    ->setId('borrower_type')
+    ->setAttribute('required', 'required')
+    ->setLabel('Borrower Type:');
 foreach ($borrowerTypes as $opt) {
-    echo '<option value="' . htmlspecialchars($opt['option_value']) . '">' . htmlspecialchars($opt['option_name']) . '</option>';
+    $option = (new HtmlOption())
+        ->setValue($opt['option_value'])
+        ->setText($opt['option_name']);
+    $borrowerSelect->addOption($option);
 }
-echo '</select>';
-echo '</div>';
+$form->addSelect($borrowerSelect);
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="start_date">Start Date:</label><br>';
-echo '<input type="date" name="start_date" id="start_date" required style="width: 200px;" value="' . date('Y-m-d') . '">';
-echo '</div>';
+// Start Date
+$dateInput = (new HtmlInput())
+    ->setType('date')
+    ->setName('start_date')
+    ->setId('start_date')
+    ->setAttribute('required', 'required')
+    ->setValue(date('Y-m-d'))
+    ->setLabel('Start Date:');
+$form->addInput($dateInput);
 
-echo '<div style="margin-bottom: 15px;">';
-echo '<label for="borrower_name">Borrower Name:</label><br>';
-echo '<input type="text" name="borrower_name" id="borrower_name" required style="width: 300px;" placeholder="John Doe">';
-echo '</div>';
+// Borrower Name
+$nameInput = (new HtmlInput())
+    ->setType('text')
+    ->setName('borrower_name')
+    ->setId('borrower_name')
+    ->setAttribute('required', 'required')
+    ->setAttribute('placeholder', 'John Doe')
+    ->setLabel('Borrower Name:');
+$form->addInput($nameInput);
 
-echo '<div>';
-echo '<input type="submit" name="create_loan" value="Create Loan" class="button">';
-echo ' <a href="?" class="button">Cancel</a>';
-echo '</div>';
+// Submit button
+$submitBtn = (new HtmlInput())
+    ->setType('submit')
+    ->setName('create_loan')
+    ->setValue('Create Loan')
+    ->addClass('button');
+$form->addInput($submitBtn);
 
-echo '</form>';
+echo $form->getHtml();
 
