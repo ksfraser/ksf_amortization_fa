@@ -8,6 +8,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/ksfraser/ksf_amortization.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ksfraser/html.git"
         }
     ],
     "require": {
