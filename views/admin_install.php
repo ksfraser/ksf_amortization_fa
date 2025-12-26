@@ -31,12 +31,46 @@ if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
             // Replace placeholders
             $dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
             $sql = str_replace(['{PREFIX}', '&TB_PREF&'], [$dbPrefix, $dbPrefix], $sql);
-            
-            // Execute SQL
-            $db->query($sql);
-            echo '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #155724;">';
-            echo '<strong>Success:</strong> Database schema installed successfully.';
-            echo '</div>';
+
+            // Execute SQL - use multi_query for multiple statements
+            if (method_exists($db, 'multi_query')) {
+                if ($db->multi_query($sql)) {
+                    do {
+                        if ($result = $db->store_result()) {
+                            $result->free();
+                        }
+                    } while ($db->more_results() && $db->next_result());
+                    echo '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #155724;">';
+                    echo '<strong>Success:</strong> Database schema installed successfully.';
+                    echo '</div>';
+                } else {
+                    echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
+                    echo '<strong>Error:</strong> ' . htmlspecialchars($db->error);
+                    echo '</div>';
+                }
+            } else {
+                // Fallback for PDO or other DB drivers
+                $statements = explode(';', $sql);
+                $success = true;
+                foreach ($statements as $stmt) {
+                    $stmt = trim($stmt);
+                    if ($stmt) {
+                        try {
+                            $db->query($stmt);
+                        } catch (Exception $e) {
+                            $success = false;
+                            echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
+                            echo '<strong>Error:</strong> ' . htmlspecialchars($e->getMessage());
+                            echo '</div>';
+                        }
+                    }
+                }
+                if ($success) {
+                    echo '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #155724;">';
+                    echo '<strong>Success:</strong> Database schema installed successfully.';
+                    echo '</div>';
+                }
+            }
         } catch (Exception $e) {
             echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
             echo '<strong>Error:</strong> ' . htmlspecialchars($e->getMessage());
