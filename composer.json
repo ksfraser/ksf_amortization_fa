@@ -7,7 +7,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/ksfraser/ksf_amortization.git"
+            "url": "https://github.com/ksfraser/ksf_amortization_core.git"
         },
         {
             "type": "vcs",
@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": ">=7.3",
-        "ksfraser/amortizations-core": "^1.0",
+        "ksfraser/amortizations-core": "1.0.4",
         "ksfraser/html": "^1.0"
     },
     "require-dev": {
