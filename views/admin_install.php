@@ -24,61 +24,67 @@ global $db;
 
 // Handle install action
 if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
-    $schemaPath = __DIR__ . '/../vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/schema.sql';
-    if (file_exists($schemaPath)) {
-        try {
-            $sql = file_get_contents($schemaPath);
-            // Replace placeholders
-            $dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
-            $sql = str_replace(['{PREFIX}', '&TB_PREF&'], [$dbPrefix, $dbPrefix], $sql);
-
-            // Execute SQL - use multi_query for multiple statements
-            if (method_exists($db, 'multi_query')) {
-                if ($db->multi_query($sql)) {
-                    do {
-                        if ($result = $db->store_result()) {
-                            $result->free();
-                        }
-                    } while ($db->more_results() && $db->next_result());
-                    echo '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #155724;">';
-                    echo '<strong>Success:</strong> Database schema installed successfully.';
-                    echo '</div>';
+    $schemaDir = __DIR__ . '/../vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/';
+    $schemaFiles = [
+        $schemaDir . 'schema.sql',
+        $schemaDir . 'schema_selectors.sql',
+        $schemaDir . 'schema_events.sql',
+        $schemaDir . 'schema_delinquency.sql',
+    ];
+    $dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
+    $allSuccess = true;
+    foreach ($schemaFiles as $schemaPath) {
+        if (file_exists($schemaPath)) {
+            try {
+                $sql = file_get_contents($schemaPath);
+                $sql = str_replace(['{PREFIX}', '&TB_PREF&'], [$dbPrefix, $dbPrefix], $sql);
+                // Execute SQL - use multi_query for multiple statements
+                if (method_exists($db, 'multi_query')) {
+                    if ($db->multi_query($sql)) {
+                        do {
+                            if ($result = $db->store_result()) {
+                                $result->free();
+                            }
+                        } while ($db->more_results() && $db->next_result());
+                    } else {
+                        $allSuccess = false;
+                        echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
+                        echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($db->error);
+                        echo '</div>';
+                    }
                 } else {
-                    echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
-                    echo '<strong>Error:</strong> ' . htmlspecialchars($db->error);
-                    echo '</div>';
-                }
-            } else {
-                // Fallback for PDO or other DB drivers
-                $statements = explode(';', $sql);
-                $success = true;
-                foreach ($statements as $stmt) {
-                    $stmt = trim($stmt);
-                    if ($stmt) {
-                        try {
-                            $db->query($stmt);
-                        } catch (Exception $e) {
-                            $success = false;
-                            echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
-                            echo '<strong>Error:</strong> ' . htmlspecialchars($e->getMessage());
-                            echo '</div>';
+                    // Fallback for PDO or other DB drivers
+                    $statements = explode(';', $sql);
+                    foreach ($statements as $stmt) {
+                        $stmt = trim($stmt);
+                        if ($stmt) {
+                            try {
+                                $db->query($stmt);
+                            } catch (Exception $e) {
+                                $allSuccess = false;
+                                echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
+                                echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($e->getMessage());
+                                echo '</div>';
+                            }
                         }
                     }
                 }
-                if ($success) {
-                    echo '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #155724;">';
-                    echo '<strong>Success:</strong> Database schema installed successfully.';
-                    echo '</div>';
-                }
+            } catch (Exception $e) {
+                $allSuccess = false;
+                echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
+                echo '<strong>Error in ' . htmlspecialchars(basename($schemaPath)) . ':</strong> ' . htmlspecialchars($e->getMessage());
+                echo '</div>';
             }
-        } catch (Exception $e) {
-            echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
-            echo '<strong>Error:</strong> ' . htmlspecialchars($e->getMessage());
+        } else {
+            $allSuccess = false;
+            echo '<div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 10px 0; border-radius: 5px; color: #856404;">';
+            echo '<strong>Warning:</strong> Schema file not found at: ' . htmlspecialchars($schemaPath);
             echo '</div>';
         }
-    } else {
-        echo '<div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 10px 0; border-radius: 5px; color: #856404;">';
-        echo '<strong>Warning:</strong> Schema file not found at: ' . htmlspecialchars($schemaPath);
+    }
+    if ($allSuccess) {
+        echo '<div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #155724;">';
+        echo '<strong>Success:</strong> All database schemas installed successfully.';
         echo '</div>';
     }
 }
