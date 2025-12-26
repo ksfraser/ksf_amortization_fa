@@ -1,4 +1,8 @@
 <?php
+// Enable error display for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 /**
  * Installation and Status Check View
  * 
