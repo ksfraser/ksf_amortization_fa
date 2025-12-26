@@ -47,9 +47,9 @@ if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
                             }
                         } while ($db->more_results() && $db->next_result());
                     } else {
-                        // Suppress harmless 'already exists' errors if IF NOT EXISTS is present
-                        if (strpos($db->error, 'already exists') !== false && strpos($sql, 'IF NOT EXISTS') !== false) {
-                            // Do not mark as failure, just skip error output
+                        // Always suppress 'already exists' errors for CREATE TABLE IF NOT EXISTS
+                        if (strpos($db->error, 'already exists') !== false && strpos($sql, 'CREATE TABLE IF NOT EXISTS') !== false) {
+                            // Do not mark as failure, do not show error
                         } else {
                             $allSuccess = false;
                             echo '<div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; margin: 10px 0; border-radius: 5px; color: #721c24;">';
