@@ -43,8 +43,15 @@ class hooks_amortization extends hooks {
             $dbPrefix = '0_';
         }
         
-        // Step 4: Run generic installer
-        $installer = new \Ksfraser\Amortizations\AmortizationModuleInstaller($db, $dbPrefix);
+        // Step 4: Run generic installer with all schema files
+        $schemaDir = __DIR__ . '/../src/Ksfraser/Amortizations/';
+        $schemaFiles = [
+            $schemaDir . 'schema.sql',
+            $schemaDir . 'schema_selectors.sql',
+            $schemaDir . 'schema_events.sql',
+            $schemaDir . 'schema_delinquency.sql',
+        ];
+        $installer = new \Ksfraser\Amortizations\AmortizationModuleInstaller($db, $schemaFiles);
         $installer->install();
     }
     
