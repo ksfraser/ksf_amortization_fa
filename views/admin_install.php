@@ -30,7 +30,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
             $sql = file_get_contents($schemaPath);
             // Replace placeholders
             $dbPrefix = defined('TB_PREF') ? TB_PREF : '0_';
-            $sql = str_replace('{PREFIX}', $dbPrefix, $sql);
+            $sql = str_replace(['{PREFIX}', '&TB_PREF&'], [$dbPrefix, $dbPrefix], $sql);
             
             // Execute SQL
             $db->query($sql);
@@ -170,8 +170,7 @@ echo '</div>'; // Close schema div
 
 // Navigation
 echo '<div style="margin-top: 20px;">';
-$backLink = new HtmlA();
+$backLink = new HtmlA(new HtmlString('← Back to Loans'));
 $backLink->setHref('?action=default');
-$backLink->setText('← Back to Loans');
 echo $backLink->getHtml();
 echo '</div>';
