@@ -74,6 +74,11 @@ switch ($action) {
         include __DIR__ . '/views/admin_selectors.php';
         break;
         
+    case 'admin_install':
+        // Installation status and schema management
+        include __DIR__ . '/views/admin_install.php';
+        break;
+        
     case 'create':
         // Create new loan
         include __DIR__ . '/views/user_loan_setup.php';

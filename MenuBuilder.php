@@ -71,6 +71,13 @@ class AmortizationMenuBuilder
         // Spacing
         $nav->addNested(new HtmlString(' '));
         
+        // Installation Status link
+        $installLink = $this->createStyledLink('System Status', '?action=admin_install');
+        $nav->addNested($installLink);
+        
+        // Spacing
+        $nav->addNested(new HtmlString(' '));
+        
         // Reports link
         $reportLink = $this->createStyledLink('Reports', '?action=report');
         $nav->addNested($reportLink);
