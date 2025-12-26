@@ -51,10 +51,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
 
 echo (new Heading(2))->setText('Installation Status')->render();
 
-// Debug info
-$debugDiv = new Div();
-$debugDiv->addClass('debug-panel');
-$debugDiv->setStyle('background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; margin: 10px 0; border-radius: 5px; font-family: monospace;');
+// Debug info - use direct HTML with styling
+echo '<div style="background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; margin: 10px 0; border-radius: 5px; font-family: monospace;">';
 
 $debugInfo = '<strong>System Information:</strong><br>';
 $debugInfo .= 'PHP Version: ' . PHP_VERSION . '<br>';
@@ -139,12 +137,11 @@ if (isset($db) && $db) {
     $debugInfo .= '<span style="color: red;">Database connection not available!</span><br>';
 }
 
-$debugDiv->append(new HtmlString($debugInfo));
-echo $debugDiv->render();
+echo $debugInfo;
+echo '</div>'; // Close debug div
 
 // Schema file check
-$schemaDiv = new Div();
-$schemaDiv->setStyle('background: #fff; border: 1px solid #dee2e6; padding: 15px; margin: 10px 0; border-radius: 5px;');
+echo '<div style="background: #fff; border: 1px solid #dee2e6; padding: 15px; margin: 10px 0; border-radius: 5px;">';
 
 $schemaInfo = '<strong>Schema Files:</strong><br>';
 $schemaFiles = [
@@ -168,8 +165,8 @@ foreach ($schemaFiles as $file => $description) {
     );
 }
 
-$schemaDiv->append(new HtmlString($schemaInfo));
-echo $schemaDiv->render();
+echo $schemaInfo;
+echo '</div>'; // Close schema div
 
 // Navigation
 echo '<div style="margin-top: 20px;">';
