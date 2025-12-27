@@ -16,7 +16,9 @@ $page_security = 'SA_CUSTOMER'; // TODO: Create specific amortization security r
 $path_to_root = "../..";
 
 // Include FrontAccounting core files - this provides $db, user session, etc.
+error_log('AMORT: Including session.inc');
 include($path_to_root . "/includes/session.inc");
+error_log('AMORT: Included session.inc');
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -27,11 +29,13 @@ $moduleAutoload = __DIR__ . '/vendor/autoload.php';
 
 // Load main project autoloader (required for core classes)
 if (file_exists($mainAutoload)) {
+    error_log('AMORT: Loading main autoload');
     require_once $mainAutoload;
 }
 
 // Load module autoloader (required for FA-specific classes like FADataProvider)
 if (file_exists($moduleAutoload)) {
+    error_log('AMORT: Loading module autoload');
     require_once $moduleAutoload;
 }
 
@@ -139,8 +143,13 @@ switch ($action) {
 }
 
 // End FA page (includes footer, closes page wrapper)
+error_log('AMORT: Before end_page');
 // Only call if running within FrontAccounting
 if (function_exists('end_page')) {
+    error_log('AMORT: Calling end_page');
     end_page();
+    error_log('AMORT: After end_page');
+} else {
+    error_log('AMORT: end_page() not defined');
 }
 ?>
