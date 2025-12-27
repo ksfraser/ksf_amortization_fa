@@ -90,7 +90,7 @@ switch ($action) {
         
     case 'report':
         // Generate reports
-        $reportingPath = __DIR__ . '/vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/reporting.php';
+        $reportingPath = __DIR__ . '/vendor/ksfraser/amortizations-core/reporting.php';
         if (file_exists($reportingPath)) {
             include $reportingPath;
         } else {
