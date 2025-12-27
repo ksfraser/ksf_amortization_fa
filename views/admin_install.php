@@ -24,7 +24,7 @@ global $db;
 
 // Handle install action
 if (isset($_POST['action']) && $_POST['action'] === 'install_schema') {
-    $schemaDir = __DIR__ . '/../vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/';
+    $schemaDir = __DIR__ . '/../vendor/ksfraser/amortizations-core/';
     $schemaFiles = [
         $schemaDir . 'schema.sql',
         $schemaDir . 'schema_selectors.sql',
@@ -202,7 +202,7 @@ $schemaFiles = [
 ];
 
 foreach ($schemaFiles as $file => $description) {
-    $path = __DIR__ . '/../vendor/ksfraser/amortizations-core/src/Ksfraser/Amortizations/' . $file;
+    $path = __DIR__ . '/../vendor/ksfraser/amortizations-core/' . $file;
     $exists = file_exists($path);
     $statusIcon = $exists ? '✓' : '✗';
     $statusColor = $exists ? 'green' : 'red';
