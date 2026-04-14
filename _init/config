@@ -7,7 +7,7 @@ Homepage: https://github.com/ksfraser/ksf_amortization
 Depends: 
 Type: extension
 Name: Amortization
-InstallPath: modules/amortization
+InstallPath: modules/ksf_amortization_fa
 Filename: 
 Version: 2.4.0-1
 
