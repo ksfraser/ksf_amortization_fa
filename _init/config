@@ -1,9 +1,9 @@
-Package: Amortization
+Package: Ksf_Amortization_FA
 Description: Create a loan such as auto or mortgage, and calculate the amortization schedule.  Post Journal Entries for the amortization into the associated Liability, Expense and Asset (Bank) GLs.
 Author: Kevin Fraser <kevin@ksfraser.ca>
 License: http://www.gnu.org/copyleft/gpl-3.0.html GNU/GPL
 Maintenance: Kevin Fraser <kevin@ksfraser.ca>
-Homepage: https://github.com/ksfraser/ksf_amortization
+Homepage: https://github.com/ksfraser/ksf_amortization_fa
 Depends: 
 Type: extension
 Name: Amortization

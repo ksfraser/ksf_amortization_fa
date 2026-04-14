@@ -13,7 +13,7 @@ if (!defined('AMORTIZATION_PLATFORM')) {
  * @package AmortizationModule
  */
 
-class hooks_amortization extends hooks {
+class hooks_ksf_amortization_fa extends hooks {
     /**
      * Install the Amortization module and run generic installer
      * 
@@ -23,8 +23,9 @@ class hooks_amortization extends hooks {
      * 3. Runs the database installer
      */
     function install() {
+/*
         // Step 1: Ensure Composer has been run
-        $this->ensureComposerDependencies();
+//        $this->ensureComposerDependencies();
         
         // Step 2: Load autoloader
         $autoload = __DIR__ . '/vendor/autoload.php';
@@ -53,6 +54,7 @@ class hooks_amortization extends hooks {
         ];
         $installer = new \Ksfraser\Amortizations\AmortizationModuleInstaller($db, $schemaFiles);
         $installer->install();
+*/
     }
     
     /**
@@ -60,7 +62,7 @@ class hooks_amortization extends hooks {
      * 
      * Automatically runs `composer install` if vendor/ directory doesn't exist
      * or if composer.lock is missing
-     */
+     * /
     private function ensureComposerDependencies() {
         $moduleDir = __DIR__;
         $vendorDir = $moduleDir . '/vendor';
@@ -87,7 +89,7 @@ class hooks_amortization extends hooks {
      * 
      * @param string $directory The directory to run composer in
      * @throws Exception if composer is not available or command fails
-     */
+     * /
     private function runComposerInstall($directory) {
         // Check if we can execute shell commands
         if (!function_exists('shell_exec') || !function_exists('exec')) {
@@ -127,7 +129,7 @@ class hooks_amortization extends hooks {
      * Only show to users with Loans Administrator or Loans Reader access
      * @return void
      */
-    var $module_name = 'amortization'; 
+    var $module_name = 'ksf_amortization_fa'; 
     function install_options($app) {
         global $user;
         global $path_to_root;
